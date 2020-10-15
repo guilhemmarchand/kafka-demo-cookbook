@@ -9,7 +9,9 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
 ### kafka-data-gen
 
-    git clone https://github.com/dtregonning/kafka-data-gen.git   
+    git clone https://github.com/guilhemmarchand/kafka-data-gen.git
+
+*Note: this is a fork from https://github.com/dtregonning/kafka-data-gen.git with some modification for the purpose of the demo*
 
 ## Start the lab environment
 
@@ -76,5 +78,43 @@ Once everything is up and running, the UI would show components discovered:
 
 ![screenshot1](./img/app_main.png)
 
-## Demo basic Kafka ingestion
+## Prepare kafka-data-gen
 
+Enter the kafka-data-gen directory and run gradle:
+
+    cd kafka-data-gen
+    gradle install
+
+## Demo 1: ingestion with the HEC event endpoint
+
+The most convenient and the most performing way of ingesting Kafka messages in Splunk is to target the HEC event endpoint.
+
+However, there are strict limitations regarding the date time parsing capabilities, unless specific in a specific format in a specific way, the _time will be equal to the ingestion time in Splunk, often enough this may not be compliant with the requirements. (the time stamp is not accurate, delay in the ingestion would cause even more inaccuracy)
+
+- Generate 1 million of messages in a topic: "kafka_demo_1"
+
+    java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_1 -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+
+- Create an index in Splunk named "kafka_demo"
+
+- Create a new HEC token, do no specifiy any sourcetype / source and select the default index to be kafka_demo
+
+- Create a new Sink connector:
+
+```json
+curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
+"name": "sink-splunk-demo1",
+"config": {
+   "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
+   "tasks.max": "1",
+   "topics":"kafka_app_acme_amer",
+   "splunk.indexes": "kafka_demo",
+   "splunk.sourcetypes": "kafka:gen",
+   "splunk.sources": "kafka:west:emea",
+   "splunk.hec.uri": "https://localhost:8088",
+   "splunk.hec.token": "3584634f-a663-49cf-a2fa-23521bb515aa",
+   "splunk.hec.raw": "false",
+   "splunk.hec.ssl.validate.certs": "false"
+  }
+}'
+```
