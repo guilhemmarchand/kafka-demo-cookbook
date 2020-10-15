@@ -82,8 +82,10 @@ Once everything is up and running, the UI would show components discovered:
 
 Enter the kafka-data-gen directory and run gradle:
 
-    cd kafka-data-gen
-    gradle install
+```
+cd kafka-data-gen
+gradle install
+```
 
 ## Demo 1: ingestion with the HEC event endpoint
 
@@ -93,7 +95,9 @@ However, there are strict limitations regarding the date time parsing capabiliti
 
 - Generate 1 million of messages in a topic: "kafka_demo_1"
 
-    java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_1 -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+```
+java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_1 -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+```
 
 - Create an index in Splunk named "kafka_demo"
 
