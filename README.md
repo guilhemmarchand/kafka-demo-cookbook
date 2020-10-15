@@ -25,7 +25,13 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 *Optionally:*
 
     docker-compose up -d kafka-burrow
-    docker-compose up -d -kafka-monitor
+    docker-compose up -d kafka-monitor
+
+*Confluent Optionally:*
+
+    docker-compose up -d schema-registry
+    docker-compose up -d ksql-server
+    docker-compose up -d kafka-rest
 
 **To use a Splunk instance running locally or elsewhere:**
 
@@ -41,5 +47,34 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 *Optionally:*
 
     docker-compose up -d kafka-burrow
-    docker-compose up -d -kafka-monitor
+    docker-compose up -d kafka-monitor
+
+*Confluent Optionally:*
+
+    docker-compose up -d schema-registry
+    docker-compose up -d ksql-server
+    docker-compose up -d kafka-rest
+
+## Kafka Smart Monitoring app for Splunk
+
+Access the Splunk UI: (if running in Docker / localhost)
+
+http://localhost:8000
+
+Install the Kafka Smart Monitoring app:
+
+https://splunkbase.splunk.com/app/4268/
+
+If Splunk is not running in Docker with provided templates, you can simple install these base config apps to pre-configure an HEC token, indexers and some other configuration items:
+
+https://github.com/guilhemmarchand/kafka-docker-splunk/tree/master/splunk
+
+- TA-docker-kafka
+- TA-telegraf-kafka
+
+Once everything is up and running, the UI would show components discovered:
+
+![screenshot1](./img/app_main.png)
+
+## Demo basic Kafka ingestion
 
