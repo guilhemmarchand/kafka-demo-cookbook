@@ -159,7 +159,7 @@ TRUNCATE=0
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
-"name": "sink-splunk-demo1",
+"name": "sink-splunk-demo2",
 "config": {
    "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
    "tasks.max": "1",
