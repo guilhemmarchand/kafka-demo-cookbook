@@ -249,3 +249,44 @@ java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256
 
 Definition of Splunk Metadata in addition with the creation of two indexed fields (company and region) are handled automatically by the Sink connector relying on the Kafka headers.
 
+## Managing connectors
+
+*Getting the list of plugins available in Kafka Connect:*
+
+    curl localhost:18082/connector-plugins
+
+*Getting the list of sink connectors configured:*
+
+    curl localhost:18082/connectors
+
+*List config for each:*
+
+```
+curl localhost:18082/connectors/sink-splunk-demo1
+
+curl localhost:18082/connectors/sink-splunk-demo2
+
+curl localhost:18082/connectors/sink-splunk-demo3
+```
+
+*Getting tasks:*
+
+    curl localhost:18082/connectors/tasks
+
+*Pause a connector:*
+
+    curl -X PUT localhost:18082/connectors/sink-splunk-demo1/pause
+
+*Resume a connector:*
+
+    curl -X PUT localhost:18082/connectors/sink-splunk-demo1/resume
+
+*Delete connectors:*
+
+```
+curl -X DELETE localhost:18082/connectors/sink-splunk-demo1
+
+curl -X DELETE localhost:18082/connectors/sink-splunk-demo2
+
+curl -X DELETE localhost:18082/connectors/sink-splunk-demo3
+```
