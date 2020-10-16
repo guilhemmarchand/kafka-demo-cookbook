@@ -136,7 +136,7 @@ index=kafka_demo sourcetype=kafka:gen
 | eval latency_time_to_indextime=(_indextime-_time)
 | eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
 | eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
-| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+| timechart span=1m count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
 ```
 
 ## Demo 2: ingestion with the HEC raw endpoint
@@ -195,7 +195,7 @@ index=kafka_demo sourcetype=kafka:gen
 | eval latency_time_to_indextime=(_indextime-_time)
 | eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
 | eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
-| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+| timechart span=1m count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
 ```
 
 ## Demo 3: ingestion with the HEC event endpoint using Kafka headers
@@ -276,7 +276,7 @@ index=kafka_demo_acme sourcetype=kafka:gen
 | eval latency_time_to_indextime=(_indextime-_time)
 | eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
 | eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
-| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+| timechart span=1m count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
 ```
 
 ## Managing connectors
