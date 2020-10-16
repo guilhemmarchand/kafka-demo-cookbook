@@ -239,5 +239,11 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 }'
 ```
 
+- Generate 1 million of messages in a topic: "kafka_demo_headers"
+
+```
+java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
+```
+
 Definition of Splunk Metadata in addition with the creation of two indexed fields (company and region) are handled automatically by the Sink connector relying on the Kafka headers.
 
