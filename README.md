@@ -212,6 +212,8 @@ docker run --network=host --tty --interactive --rm \
 
 - Create a new HEC token, do no specifiy any sourcetype / source and select the default index to be **main**
 
+- Create a new index named "kafka_demo_acme" and add this index to the list of allowed indexed in the token definition
+
 - Create a new Sink connector:
 
 *modify the HEC target if Splunk is not running in Docker*
