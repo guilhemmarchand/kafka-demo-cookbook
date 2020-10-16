@@ -128,3 +128,53 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 ```
 
 The topic activity will be visible in the Kafka Smart monitoring interface, and data should be ingested in Splunk.
+
+## Demo 2: ingestion with the HEC raw endpoint
+
+- Generate 1 million of messages in a topic: "kafka_demo"
+
+```
+java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+```
+
+- Define a new sourcetype in Splunk (props.conf)
+
+```
+[(?::){0}kafka:app:*]
+SHOULD_LINEMERGE=false
+LINE_BREAKER = (####)
+SHOULD_LINEMERGE = false
+CHARSET=UTF-8
+TIME_PREFIX=\"timestamp\":\"
+TIME_FORMAT=%Y-%m-%d %H:%M:%S.%3N
+MAX_TIMESTAMP_LOOKAHEAD=30
+TRUNCATE=0
+```
+
+- Create a new Sink connector:
+
+*modify the HEC target if Splunk is not running in Docker*
+
+*modify the HEC token accordingly*
+
+```json
+curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
+"name": "sink-splunk-demo1",
+"config": {
+   "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
+   "tasks.max": "1",
+   "topics":"kafka_demo",
+   "splunk.indexes": "kafka_demo",
+   "splunk.sourcetypes": "kafka:gen",
+   "splunk.sources": "kafka:west:emea",
+   "splunk.hec.uri": "https://splunk:8088",
+   "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
+   "splunk.hec.raw": "true",
+   "splunk.hec.raw.line.breaker" : "####",   
+   "splunk.hec.ssl.validate.certs": "false"
+  }
+}'
+```
+
+This time the data is ingested using thw raw enedpoint, the events breaking relies on a delimitor created by the Splunk sink connector plugin and the sourcetype definition.
+
