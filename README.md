@@ -129,6 +129,16 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 
 The topic activity will be visible in the Kafka Smart monitoring interface, and data should be ingested in Splunk.
 
+*Splunk search example:*
+
+```
+index=kafka_demo sourcetype=kafka:gen
+| eval latency_time_to_indextime=(_indextime-_time)
+| eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
+| eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
+| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+```
+
 ## Demo 2: ingestion with the HEC raw endpoint
 
 - Generate 1 million of messages in a topic: "kafka_demo"
@@ -177,6 +187,16 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 ```
 
 This time the data is ingested using thw raw enedpoint, the events breaking relies on a delimitor created by the Splunk sink connector plugin and the sourcetype definition.
+
+*Splunk search example:*
+
+```
+index=kafka_demo sourcetype=kafka:gen
+| eval latency_time_to_indextime=(_indextime-_time)
+| eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
+| eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
+| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+```
 
 ## Demo 3: ingestion with the HEC event endpoint using Kafka headers
 
@@ -248,6 +268,16 @@ java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256
 ```
 
 Definition of Splunk Metadata in addition with the creation of two indexed fields (company and region) are handled automatically by the Sink connector relying on the Kafka headers.
+
+*Splunk search example:*
+
+```
+index=kafka_demo_acme sourcetype=kafka:gen
+| eval latency_time_to_indextime=(_indextime-_time)
+| eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
+| eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
+| timechart count as eventcount, avg(latency_time_to_indextime) as latency_time_to_indextime, avg(latency_indextime_to_raw_timestamp) as latency_indextime_to_raw_timestamp
+```
 
 ## Managing connectors
 
