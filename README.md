@@ -93,10 +93,10 @@ The most convenient and the most performing way of ingesting Kafka messages in S
 
 However, there are strict limitations regarding the date time parsing capabilities, unless specific in a specific format in a specific way, the _time will be equal to the ingestion time in Splunk, often enough this may not be compliant with the requirements. (the time stamp is not accurate, delay in the ingestion would cause even more inaccuracy)
 
-- Generate 1 million of messages in a topic: "kafka_demo_1"
+- Generate 1 million of messages in a topic: "kafka_demo"
 
 ```
-java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_1 -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
 
 - Create an index in Splunk named "kafka_demo"
@@ -105,20 +105,26 @@ java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256
 
 - Create a new Sink connector:
 
+*modify the HEC target if Splunk is not running in Docker*
+
+*modify the HEC token accordingly*
+
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
 "name": "sink-splunk-demo1",
 "config": {
    "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
    "tasks.max": "1",
-   "topics":"kafka_app_acme_amer",
+   "topics":"kafka_demo",
    "splunk.indexes": "kafka_demo",
    "splunk.sourcetypes": "kafka:gen",
    "splunk.sources": "kafka:west:emea",
-   "splunk.hec.uri": "https://localhost:8088",
-   "splunk.hec.token": "3584634f-a663-49cf-a2fa-23521bb515aa",
+   "splunk.hec.uri": "https://splunk:8088",
+   "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
    "splunk.hec.raw": "false",
    "splunk.hec.ssl.validate.certs": "false"
   }
 }'
 ```
+
+The topic activity will be visible in the Kafka Smart monitoring interface, and data should be ingested in Splunk.
