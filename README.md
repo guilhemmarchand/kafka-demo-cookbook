@@ -26,7 +26,7 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
 *Optionally:*
 
-    docker-compose up -d kafka-burrow
+    docker-compose up -d burrow
     docker-compose up -d kafka-monitor
 
 *Confluent Optionally:*
