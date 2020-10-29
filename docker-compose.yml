@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+
+  kafka-data-gen:
+    image: kafka-data-gen:1.0
+    restart: "no"
+    hostname: kafka-data-gen
+    command: "tail -f /dev/null"
+

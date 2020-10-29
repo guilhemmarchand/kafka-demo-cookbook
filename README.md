@@ -35,6 +35,8 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
     docker-compose up -d telegraf
     docker-compose up -d splunk
 
+    docker-compose up -d kafka-data-gen
+
 *Optionally:*
 
     docker-compose up -d burrow
@@ -66,6 +68,8 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     docker-compose up -d kafka-connect-1
     docker-compose up -d telegraf
+
+    docker-compose up -d kafka-data-gen
 
 *Optionally:*
 
@@ -99,15 +103,6 @@ Once everything is up and running, the UI would show components discovered:
 
 ![screenshot1](./img/app_main.png)
 
-## Prepare kafka-data-gen
-
-Enter the kafka-data-gen directory and run gradle:
-
-```
-cd kafka-data-gen
-gradle install
-```
-
 ## Demo 1: ingestion with the HEC event endpoint
 
 The most convenient and the most performing way of ingesting Kafka messages in Splunk is to target the HEC event endpoint.
@@ -117,7 +112,11 @@ However, there are strict limitations regarding the date time parsing capabiliti
 - Generate 1 million of messages in a topic: "kafka_demo"
 
 ```
-java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+
+cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
+docker-compose exec kafka-data-gen /bin/bash
+
+java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
 
 - Create an index in Splunk named "kafka_demo"
@@ -129,6 +128,8 @@ java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256
 *modify the HEC target if Splunk is not running in Docker*
 
 *modify the HEC token accordingly*
+
+*run the curl command on a new terminal*
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -165,7 +166,11 @@ index=kafka_demo sourcetype=kafka:gen
 - Generate 1 million of messages in a topic: "kafka_demo"
 
 ```
-java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+
+cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
+docker-compose exec kafka-data-gen /bin/bash
+
+java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
 
 - Define a new sourcetype in Splunk (props.conf)
@@ -187,6 +192,8 @@ TRUNCATE=0
 *modify the HEC target if Splunk is not running in Docker*
 
 *modify the HEC token accordingly*
+
+*run the curl command on a new terminal*
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -237,7 +244,11 @@ Partition: 0	Offset: 9
 - Generate a few messages in a new topic named "kafka_demo_headers" to verify the headers
 
 ```
-java -jar build/libs/kafka-data-gen.jar -message-count 5 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
+
+cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
+docker-compose exec kafka-data-gen /bin/bash
+
+java -jar /app/kafka-data-gen.jar -message-count 5 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
 ```
 
 A powerful way to vizualise these headers is to use kafkacat, example (from in within docker)
@@ -260,6 +271,8 @@ docker run --network=host --tty --interactive --rm \
 *modify the HEC target if Splunk is not running in Docker*
 
 *modify the HEC token accordingly*
+
+*run the curl command on a new terminal*
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -285,7 +298,11 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 - Generate 1 million of messages in a topic: "kafka_demo_headers"
 
 ```
-java -jar build/libs/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "localhost:19092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
+
+cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
+docker-compose exec kafka-data-gen /bin/bash
+
+java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
 ```
 
 Definition of Splunk Metadata in addition with the creation of two indexed fields (company and region) are handled automatically by the Sink connector relying on the Kafka headers.
