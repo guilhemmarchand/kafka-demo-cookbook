@@ -137,7 +137,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
    "splunk.sourcetypes": "kafka:gen",
    "splunk.sources": "kafka:west:emea:demo1",
    "splunk.hec.uri": "https://splunk:8088",
-   "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
+   "splunk.hec.token": "1f2e3966-14ad-11eb-9bfa-acde48001122",
    "splunk.hec.raw": "false",
    "splunk.hec.ssl.validate.certs": "false"
   }
@@ -201,7 +201,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
    "splunk.sourcetypes": "kafka:gen",
    "splunk.sources": "kafka:west:emea:demo2",
    "splunk.hec.uri": "https://splunk:8088",
-   "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
+   "splunk.hec.token": "1f2e3966-14ad-11eb-9bfa-acde48001122",
    "splunk.hec.raw": "true",
    "splunk.hec.raw.line.breaker" : "####",   
    "splunk.hec.ssl.validate.certs": "false"
@@ -277,7 +277,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
    "tasks.max": "1",
    "topics":"kafka_demo_headers",
    "splunk.hec.uri": "https://splunk:8088",
-   "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
+   "splunk.hec.token": "1f2e3966-14ad-11eb-9bfa-acde48001122",
    "splunk.hec.raw": "false",
    "splunk.header.support": "true",
    "splunk.header.custom": "company,region",
