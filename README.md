@@ -7,6 +7,8 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     git clone https://github.com/guilhemmarchand/kafka-docker-splunk.git
 
+*Any Splunk configuration as index or sourcetype definition required in the following demos are already available to the Splunk instance if you use the Splunk On Docker template.*
+
 ## Start the lab environment
 
 **To run a Splunk instance in Docker in the guest:**
@@ -259,7 +261,7 @@ docker run --network=host --tty --interactive --rm \
 
 - Create a new HEC token, do no specifiy any sourcetype / source and select the default index to be **main**
 
-- Create a new index named "kafka_demo_acme" and add this index to the list of allowed indexed in the token definition
+- Create a new index named **kafka_demo_acme** and add this index to the list of allowed indexed in the token definition
 
 - Create a new Sink connector:
 
