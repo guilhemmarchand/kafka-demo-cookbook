@@ -18,8 +18,19 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 **To run a Splunk instance in Docker in the guest:**
 
     cd kafka-docker-splunk/template_docker_splunk_ondocker/
-    for container in zookeeper-1 zookeeper-2 zookeeper-3; do; docker-compose up -d $container; done
-    for container in kafka-1 kafka-2 kafka-3; do; docker-compose up -d $container; done
+
+    docker-compose up -d zookeeper-1
+    docker-compose up -d zookeeper-2
+    docker-compose up -d zookeeper-3
+
+    sleep 15
+
+    docker-compose up -d kafka-1
+    docker-compose up -d kafka-2
+    docker-compose up -d kafka-3
+
+    sleep 15
+
     docker-compose up -d kafka-connect-1
     docker-compose up -d telegraf
     docker-compose up -d splunk
@@ -41,14 +52,24 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
 *If the Splunk instance is hosted elsewhere than the host, edit docker-compose.yml and update the HEC target*
 
-    for container in zookeeper-1 zookeeper-2 zookeeper-3; do; docker-compose up -d $container; done
-    for container in kafka-1 kafka-2 kafka-3; do; docker-compose up -d $container; done
+    docker-compose up -d zookeeper-1
+    docker-compose up -d zookeeper-2
+    docker-compose up -d zookeeper-3
+
+    sleep 15
+
+    docker-compose up -d kafka-1
+    docker-compose up -d kafka-2
+    docker-compose up -d kafka-3
+
+    sleep 15
+
     docker-compose up -d kafka-connect-1
     docker-compose up -d telegraf
 
 *Optionally:*
 
-    docker-compose up -d kafka-burrow
+    docker-compose up -d burrow
     docker-compose up -d kafka-monitor
 
 *Confluent Optionally:*
