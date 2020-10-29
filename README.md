@@ -7,17 +7,15 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     git clone https://github.com/guilhemmarchand/kafka-docker-splunk.git
 
-### kafka-data-gen
-
-    git clone https://github.com/guilhemmarchand/kafka-data-gen.git
-
-*Note: this is a fork from https://github.com/dtregonning/kafka-data-gen.git with some modification for the purpose of the demo*
-
 ## Start the lab environment
 
 **To run a Splunk instance in Docker in the guest:**
 
     cd kafka-docker-splunk/template_docker_splunk_ondocker/
+
+    docker-compose up -d --no-deps splunk
+
+    sleep 15
 
     docker-compose up -d zookeeper-1
     docker-compose up -d zookeeper-2
@@ -33,8 +31,6 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     docker-compose up -d kafka-connect-1
     docker-compose up -d telegraf
-    docker-compose up -d splunk
-
     docker-compose up -d kafka-data-gen
 
 *Optionally:*
@@ -68,7 +64,6 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     docker-compose up -d kafka-connect-1
     docker-compose up -d telegraf
-
     docker-compose up -d kafka-data-gen
 
 *Optionally:*
