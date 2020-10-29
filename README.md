@@ -111,7 +111,7 @@ However, there are strict limitations regarding the date time parsing capabiliti
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
 docker-compose exec kafka-data-gen /bin/bash
 
-java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo1 -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
 
 - Create an index in Splunk named "kafka_demo"
@@ -132,10 +132,10 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 "config": {
    "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
    "tasks.max": "1",
-   "topics":"kafka_demo",
+   "topics":"kafka_demo1",
    "splunk.indexes": "kafka_demo",
    "splunk.sourcetypes": "kafka:gen",
-   "splunk.sources": "kafka:west:emea",
+   "splunk.sources": "kafka:west:emea:demo1",
    "splunk.hec.uri": "https://splunk:8088",
    "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
    "splunk.hec.raw": "false",
@@ -149,7 +149,7 @@ The topic activity will be visible in the Kafka Smart monitoring interface, and 
 *Splunk search example:*
 
 ```
-index=kafka_demo sourcetype=kafka:gen
+index=kafka_demo sourcetype=kafka:gen source=kafka:west:emea:demo1
 | eval latency_time_to_indextime=(_indextime-_time)
 | eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
 | eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
@@ -165,7 +165,7 @@ index=kafka_demo sourcetype=kafka:gen
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
 docker-compose exec kafka-data-gen /bin/bash
 
-java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
+java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo2 -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
 
 - Define a new sourcetype in Splunk (props.conf)
@@ -196,10 +196,10 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 "config": {
    "connector.class": "com.splunk.kafka.connect.SplunkSinkConnector",
    "tasks.max": "1",
-   "topics":"kafka_demo",
+   "topics":"kafka_demo2",
    "splunk.indexes": "kafka_demo",
    "splunk.sourcetypes": "kafka:gen",
-   "splunk.sources": "kafka:west:emea",
+   "splunk.sources": "kafka:west:emea:demo2",
    "splunk.hec.uri": "https://splunk:8088",
    "splunk.hec.token": "xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxx",
    "splunk.hec.raw": "true",
@@ -214,7 +214,7 @@ This time the data is ingested using thw raw enedpoint, the events breaking reli
 *Splunk search example:*
 
 ```
-index=kafka_demo sourcetype=kafka:gen
+index=kafka_demo sourcetype=kafka:gen source=kafka:west:emea:demo2
 | eval latency_time_to_indextime=(_indextime-_time)
 | eval timestamp_epoch=strptime(timestamp, "%Y-%m-%d %H:%M:%S.%3N")
 | eval latency_indextime_to_raw_timestamp=_indextime-timestamp_epoch
