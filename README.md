@@ -1,4 +1,5 @@
 # kafka-demo-cookbook
+
 Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
 ## Tooling
@@ -7,7 +8,7 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     git clone https://github.com/guilhemmarchand/kafka-docker-splunk.git
 
-*Any Splunk configuration as index or sourcetype definition required in the following demos are already available to the Splunk instance if you use the Splunk On Docker template.*
+_Any Splunk configuration as index or sourcetype definition required in the following demos are already available to the Splunk instance if you use the Splunk On Docker template._
 
 ## Start the lab environment
 
@@ -15,69 +16,69 @@ Kafka Smart Monitoring / Kafka Connect for Splunk demo cookbook
 
     cd kafka-docker-splunk/template_docker_splunk_ondocker/
 
-    docker-compose up -d --no-deps splunk
+    docker compose up -d --no-deps splunk
 
     sleep 15
 
-    docker-compose up -d zookeeper-1
-    docker-compose up -d zookeeper-2
-    docker-compose up -d zookeeper-3
+    docker compose up -d zookeeper-1
+    docker compose up -d zookeeper-2
+    docker compose up -d zookeeper-3
 
     sleep 15
 
-    docker-compose up -d kafka-1
-    docker-compose up -d kafka-2
-    docker-compose up -d kafka-3
+    docker compose up -d kafka-1
+    docker compose up -d kafka-2
+    docker compose up -d kafka-3
 
     sleep 15
 
-    docker-compose up -d kafka-connect-1
-    docker-compose up -d telegraf
-    docker-compose up -d kafka-data-gen
+    docker compose up -d kafka-connect-1
+    docker compose up -d telegraf
+    docker compose up -d kafka-data-gen
 
-*Optionally:*
+_Optionally:_
 
-    docker-compose up -d burrow
-    docker-compose up -d kafka-monitor
+    docker compose up -d burrow
+    docker compose up -d kafka-monitor
 
-*Confluent Optionally:*
+_Confluent Optionally:_
 
-    docker-compose up -d schema-registry
-    docker-compose up -d ksql-server
-    docker-compose up -d kafka-rest
+    docker compose up -d schema-registry
+    docker compose up -d ksql-server
+    docker compose up -d kafka-rest
 
 **To use a Splunk instance running locally or elsewhere:**
 
     cd kafka-docker-splunk/template_docker_splunk_localhost/
 
-*If the Splunk instance is hosted elsewhere than the host, edit docker-compose.yml and update the HEC target*
+_If the Splunk instance is hosted elsewhere than the host, edit docker compose.yml and update the HEC target_
 
-    docker-compose up -d zookeeper-1
-    docker-compose up -d zookeeper-2
-    docker-compose up -d zookeeper-3
-
-    sleep 15
-
-    docker-compose up -d kafka-1
-    docker-compose up -d kafka-2
-    docker-compose up -d kafka-3
+    docker compose up -d zookeeper-1
+    docker compose up -d zookeeper-2
+    docker compose up -d zookeeper-3
 
     sleep 15
 
-    docker-compose up -d kafka-connect-1
-    docker-compose up -d telegraf
-    docker-compose up -d kafka-data-gen
+    docker compose up -d kafka-1
+    docker compose up -d kafka-2
+    docker compose up -d kafka-3
 
-*Optionally:*
+    sleep 15
 
-    docker-compose up -d burrow
-    docker-compose up -d kafka-monitor
+    docker compose up -d kafka-connect-1
+    docker compose up -d telegraf
+    docker compose up -d kafka-data-gen
 
-*Confluent Optionally:*
+_Optionally:_
 
-    docker-compose up -d schema-registry
-    docker-compose up -d ksql-server
-    docker-compose up -d kafka-rest
+    docker compose up -d burrow
+    docker compose up -d kafka-monitor
+
+_Confluent Optionally:_
+
+    docker compose up -d schema-registry
+    docker compose up -d ksql-server
+    docker compose up -d kafka-rest
 
 ## Kafka Smart Monitoring app for Splunk
 
@@ -104,14 +105,14 @@ Once everything is up and running, the UI would show components discovered:
 
 The most convenient and the most performing way of ingesting Kafka messages in Splunk is to target the HEC event endpoint.
 
-However, there are strict limitations regarding the date time parsing capabilities, unless specific in a specific format in a specific way, the _time will be equal to the ingestion time in Splunk, often enough this may not be compliant with the requirements. (the time stamp is not accurate, delay in the ingestion would cause even more inaccuracy)
+However, there are strict limitations regarding the date time parsing capabilities, unless specific in a specific format in a specific way, the \_time will be equal to the ingestion time in Splunk, often enough this may not be compliant with the requirements. (the time stamp is not accurate, delay in the ingestion would cause even more inaccuracy)
 
 - Generate 1 million of messages in a topic: "kafka_demo"
 
 ```
 
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
-docker-compose exec kafka-data-gen /bin/bash
+docker compose exec kafka-data-gen /bin/bash
 
 java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo1 -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
@@ -122,11 +123,11 @@ java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topi
 
 - Create a new Sink connector:
 
-*modify the HEC target if Splunk is not running in Docker*
+_modify the HEC target if Splunk is not running in Docker_
 
-*modify the HEC token accordingly*
+_modify the HEC token accordingly_
 
-*run the curl command on a new terminal*
+_run the curl command on a new terminal_
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -148,7 +149,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 
 The topic activity will be visible in the Kafka Smart monitoring interface, and data should be ingested in Splunk.
 
-*Splunk search example:*
+_Splunk search example:_
 
 ```
 index=kafka_demo sourcetype=kafka:gen source=kafka:west:emea:demo1
@@ -165,7 +166,7 @@ index=kafka_demo sourcetype=kafka:gen source=kafka:west:emea:demo1
 ```
 
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
-docker-compose exec kafka-data-gen /bin/bash
+docker compose exec kafka-data-gen /bin/bash
 
 java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo2 -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false
 ```
@@ -186,11 +187,11 @@ TRUNCATE=0
 
 - Create a new Sink connector:
 
-*modify the HEC target if Splunk is not running in Docker*
+_modify the HEC target if Splunk is not running in Docker_
 
-*modify the HEC token accordingly*
+_modify the HEC token accordingly_
 
-*run the curl command on a new terminal*
+_run the curl command on a new terminal_
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -205,7 +206,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
    "splunk.hec.uri": "https://splunk:8088",
    "splunk.hec.token": "1f2e3966-14ad-11eb-9bfa-acde48001122",
    "splunk.hec.raw": "true",
-   "splunk.hec.raw.line.breaker" : "####",   
+   "splunk.hec.raw.line.breaker" : "####",
    "splunk.hec.ssl.validate.certs": "false"
   }
 }'
@@ -213,7 +214,7 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 
 This time the data is ingested using thw raw enedpoint, the events breaking relies on a delimitor created by the Splunk sink connector plugin and the sourcetype definition.
 
-*Splunk search example:*
+_Splunk search example:_
 
 ```
 index=kafka_demo sourcetype=kafka:gen source=kafka:west:emea:demo2
@@ -229,7 +230,7 @@ In advanced setups, we could use the Kafka headers (that would need to be genera
 
 **Kafka headers can only be used with the event endpoint.**
 
-*kafka header example:*
+_kafka header example:_
 
 ```
 Key (1 bytes): 2
@@ -243,7 +244,7 @@ Partition: 0	Offset: 9
 ```
 
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
-docker-compose exec kafka-data-gen /bin/bash
+docker compose exec kafka-data-gen /bin/bash
 
 java -jar /app/kafka-data-gen.jar -message-count 5 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
 ```
@@ -265,11 +266,11 @@ docker run --network=host --tty --interactive --rm \
 
 - Create a new Sink connector:
 
-*modify the HEC target if Splunk is not running in Docker*
+_modify the HEC target if Splunk is not running in Docker_
 
-*modify the HEC token accordingly*
+_modify the HEC token accordingly_
 
-*run the curl command on a new terminal*
+_run the curl command on a new terminal_
 
 ```json
 curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '{
@@ -297,14 +298,14 @@ curl localhost:18082/connectors -X POST -H "Content-Type: application/json" -d '
 ```
 
 cd kafka-docker-splunk/template_docker_splunk_<replace with your context>
-docker-compose exec kafka-data-gen /bin/bash
+docker compose exec kafka-data-gen /bin/bash
 
 java -jar /app/kafka-data-gen.jar -message-count 1000000 -message-size 256 -topic kafka_demo_headers -bootstrap.servers "kafka-1:19092,kafka-2:29092,kafka-3:39092" -acks all -kafka-retries 0 -kafka-batch-size 60000 -kafka-linger 1 -kafka-buffer-memory 33554432 -eps 0 -output-eventhubs false -output-kafka true -output-stdout false -generate-kafka-headers true -header-gen-profile 0
 ```
 
 Definition of Splunk Metadata in addition with the creation of two indexed fields (company and region) are handled automatically by the Sink connector relying on the Kafka headers.
 
-*Splunk search example:*
+_Splunk search example:_
 
 ```
 index=kafka_demo_acme sourcetype=kafka:gen
@@ -316,15 +317,15 @@ index=kafka_demo_acme sourcetype=kafka:gen
 
 ## Managing connectors
 
-*Getting the list of plugins available in Kafka Connect:*
+_Getting the list of plugins available in Kafka Connect:_
 
     curl localhost:18082/connector-plugins
 
-*Getting the list of sink connectors configured:*
+_Getting the list of sink connectors configured:_
 
     curl localhost:18082/connectors
 
-*List config for each:*
+_List config for each:_
 
 ```
 curl localhost:18082/connectors/sink-splunk-demo1
@@ -334,19 +335,19 @@ curl localhost:18082/connectors/sink-splunk-demo2
 curl localhost:18082/connectors/sink-splunk-demo3
 ```
 
-*Getting tasks:*
+_Getting tasks:_
 
     curl localhost:18082/connectors/tasks
 
-*Pause a connector:*
+_Pause a connector:_
 
     curl -X PUT localhost:18082/connectors/sink-splunk-demo1/pause
 
-*Resume a connector:*
+_Resume a connector:_
 
     curl -X PUT localhost:18082/connectors/sink-splunk-demo1/resume
 
-*Delete connectors:*
+_Delete connectors:_
 
 ```
 curl -X DELETE localhost:18082/connectors/sink-splunk-demo1
